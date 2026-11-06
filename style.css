@@ -133,8 +133,14 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
 .btn{display:inline-block;text-decoration:none;border:0;background:var(--py) center/100% 100% no-repeat;color:var(--ink);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:14px 22px;box-shadow:0 8px 18px rgba(0,0,0,.25)}
 .btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
 .ctl small{display:block;margin-top:16px;opacity:.65;font-size:12px}
-.phone{width:min(340px,80vw);aspect-ratio:9/16;background:#000;border-radius:28px;padding:8px;box-shadow:0 40px 80px rgba(0,0,0,.5);transform:rotate(2deg)}
-.phone canvas{width:100%;height:100%;border-radius:21px}
+/* iPhone: thin titanium frame, black bezel, Dynamic Island, side buttons */
+.phone{position:relative;width:min(320px,78vw);aspect-ratio:9/19.3;background:#000;border-radius:15%/7%;padding:3.2%;
+  box-shadow:0 0 0 3px #262838,0 0 0 4px #3a3d52,0 40px 80px rgba(0,0,0,.55);transform:rotate(2deg)}
+.phone .sb{position:absolute;width:4px;background:linear-gradient(90deg,#1d1f2c,#3a3d52);border-radius:2px}
+.phone .sb.l1{left:-7px;top:16%;height:5%}.phone .sb.l2{left:-7px;top:25%;height:9%}.phone .sb.l3{left:-7px;top:36%;height:9%}
+.phone .sb.r{right:-7px;top:27%;height:14%}
+.phone canvas{width:100%;height:100%;object-fit:contain;object-position:center;border-radius:12%/5.6%;background:#000}
+.phone::before{content:"";position:absolute;top:3.4%;left:50%;width:31%;height:3.6%;transform:translateX(-50%);background:#000;border-radius:999px;z-index:2;box-shadow:inset -10px 0 0 -6px #111522}
 
 /* 5. credits */
 .credits{position:relative;background:var(--asph) url(img/asphalt.jpg);background-size:520px;padding:18vh clamp(16px,6vw,80px) 10vh;text-align:center}
@@ -192,7 +198,7 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
   .pol{width:62vw}
   .yours{padding:12vh 0}
   .yours .wrap{grid-template-columns:1fr}
-  .phone{margin:0 auto;width:min(300px,78vw)}
+  .phone{margin:0 auto;width:min(290px,74vw)}
   .player{bottom:max(12px,env(safe-area-inset-bottom))}
 }
 @media (prefers-reduced-motion:reduce){.grain,.hint::after,.eq i{animation:none}}
