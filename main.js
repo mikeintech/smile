@@ -15,7 +15,8 @@
     li.querySelector('button').onclick = () => play(i);
     ol.appendChild(li);
   });
-  const POLS = [['f1.jpg', 'life is a series of moments'], ['f2.jpg', 'some end'], ['vid', 'bj reece orchards'], ['f4.jpg', 'so others can begin'], ['f6.jpg', 'S.M.I.L.E'], ['f7.jpg', 'no features'], ['f9.jpg', 'jet row on every beat'], ['f10.jpg', 'S.M.I.L.E']];
+  // in the order he drops the posters, then the rest
+  const POLS = [['sign-g.webp', 'life is a series of moments'], ['sign-o.webp', 'some end'], ['sign-b.webp', 'so others can begin'], ['sign-y.webp', 'S.M.I.L.E'], ['sign-orchard.webp', 'no features'], ['f9.jpg', 'jet row on every beat'], ['f10.jpg', 'S.M.I.L.E']];
   const row = $('.row');
   POLS.forEach(([src, cap], i) => {
     const f = document.createElement('figure'); f.className = 'pol';
