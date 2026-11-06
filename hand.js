@@ -7,7 +7,7 @@ window.Hand = (() => {
   let M, img, ink;
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
   const ready = Promise.all([
-    fetch(`font/${FONT}.json?v=6`).then(r => r.json()).then(j => (M = j)),
+    fetch(`font/${FONT}.json?v=7`).then(r => r.json()).then(j => (M = j)),
     load(`font/${FONT}.png?v=4`).then(i => (img = i)),
     load(`font/${FONT}-ink.png?v=4`).then(i => (ink = i))
   ]);
