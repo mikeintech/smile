@@ -139,6 +139,7 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
 /* iPhone: thin titanium frame, black bezel, Dynamic Island, side buttons */
 .phone{position:relative;width:min(320px,78vw);aspect-ratio:9/19.3;background:#000;border-radius:14%/6.6%;padding:1.6%;
   box-shadow:0 0 0 2px #262838,0 0 0 3px #3a3d52,0 40px 80px rgba(0,0,0,.55);transform:rotate(2deg)}
+.phone .flash{position:absolute;inset:1.6%;border-radius:12.5%/5.9%;background:#fff;opacity:0;pointer-events:none;z-index:3}
 .phone .sb{position:absolute;width:4px;background:linear-gradient(90deg,#1d1f2c,#3a3d52);border-radius:2px}
 .phone .sb.l1{left:-7px;top:16%;height:5%}.phone .sb.l2{left:-7px;top:25%;height:9%}.phone .sb.l3{left:-7px;top:36%;height:9%}
 .phone .sb.r{right:-7px;top:27%;height:14%}
@@ -179,7 +180,8 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
 
 /* phones */
 @media (max-width:820px){
-  .top{grid-template-columns:1fr auto;padding:14px 16px}
+  .top{grid-template-columns:1fr auto;padding:max(12px,env(safe-area-inset-top)) 16px 12px}
+  .phonecap .top{padding:64px 30px 12px}
   .top nav{display:none}
   .brand{width:170px}
   .frame{inset:0;height:auto;aspect-ratio:auto;transform:none;padding:0;box-shadow:none;background:none}
@@ -190,13 +192,15 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
   .stack{left:16px;right:16px;width:auto;top:auto;bottom:calc(9vh + 20px);transform:none}
   .count{left:16px;bottom:3vh}
   .hint{display:none}
-  .stitle{top:11vh;width:86vw}
+  .stitle{top:9vh;width:86vw}
   .sleeve{width:66vw;top:44%}
   .tracks{left:12px;right:12px;width:auto;top:auto;bottom:104px;transform:none}
   .tracks button{padding:6px 10px}
   .cgrid{grid-template-columns:1fr}
+  .credits{padding-top:9vh}
   .cgrid .ty{max-width:340px}
-  .story{padding:14vh 16px 10vh}
+  .story{padding:9vh 16px 8vh}
+  .shead{margin-bottom:7vh}
   .srow{grid-template-columns:1fr;gap:28px;margin-bottom:12vh}
   .srow:nth-child(odd) .note{order:0}
   .srow .note{width:92%;justify-self:center}
@@ -204,7 +208,7 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
   .route{gap:10px}
   .intro{flex-basis:78vw}
   .pol{width:62vw}
-  .yours{padding:12vh 0}
+  .yours{padding:8vh 0}
   .yours .wrap{grid-template-columns:1fr}
   .phone{margin:0 auto;width:min(290px,74vw)}
   .player{bottom:max(12px,env(safe-area-inset-bottom))}

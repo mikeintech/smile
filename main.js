@@ -1,4 +1,6 @@
 (() => {
+  // ?phone = recording inside a phone mockup: keep header below the Dynamic Island
+  if (/[?&]phone\b/.test(location.search)) document.documentElement.classList.add('phonecap');
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const C = { g: '#4ce902', o: '#f27f01', b: '#0190f0', y: '#edc902' };
@@ -260,7 +262,19 @@
   msg.addEventListener('input', drawCard);
   $$('.sw button').forEach(b => b.onclick = () => { $$('.sw button').forEach(x => x.setAttribute('aria-checked', x === b)); col = b.dataset.c; drawCard(); });
   const blob = () => new Promise(r => card.toBlob(r, 'image/png'));
-  $('#save').onclick = async () => { const a = document.createElement('a'); a.href = URL.createObjectURL(await blob()); a.download = 'my-moment.png'; a.click(); };
+  // save: camera-style flash on the phone, button confirms, then the download
+  const phone = $('.phone'), saveBtn = $('#save'), flash = document.createElement('i'); flash.className = 'flash'; phone.appendChild(flash);
+  saveBtn.onclick = async () => {
+    if (saveBtn.dataset.busy) return; saveBtn.dataset.busy = 1;
+    const label = saveBtn.textContent; saveBtn.textContent = 'Saving…';
+    gsap.timeline()
+      .fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.7, ease: 'power2.out' })
+      .fromTo(phone, { scale: 0.95 }, { scale: 1, duration: 0.6, ease: 'back.out(2.5)' }, 0)
+      .add(() => { saveBtn.textContent = 'Saved ✓'; gsap.fromTo(saveBtn, { scale: 0.85 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1.2,.4)' }); }, 0.45);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(await blob()); a.download = 'my-moment.png';
+    setTimeout(() => a.click(), 500);
+    setTimeout(() => { saveBtn.textContent = label; delete saveBtn.dataset.busy; }, 2400);
+  };
   $('#share').onclick = async () => {
     const f = new File([await blob()], 'my-moment.png', { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], text: 'Some Moments In Life End, Smile! @deshawnvisionz' }).catch(() => {});
