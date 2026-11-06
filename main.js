@@ -11,7 +11,7 @@
   const ol = $('.tracks');
   TRACKS.forEach(([t, d], i) => {
     const li = document.createElement('li');
-    li.innerHTML = `<button aria-label="Play ${t}"><span class="note" style="--p:url(img/paper-${TK[i]}.webp?v=2);--r:${(i % 2 ? 1 : -1) * (0.6 + (i * 37 % 10) / 10)}deg"></span><span class="n">0${i + 1}</span><div class="hw" data-text="${t}" data-size=".072" data-max="30" data-color="#f3efe7"></div><span class="d">${d}</span><span class="eq"><i></i><i></i><i></i></span></button>`;
+    li.innerHTML = `<button aria-label="Play ${t}"><span class="note" style="--p:url(img/paper-${TK[i]}.webp?v=2);--r:${(i % 2 ? 1 : -1) * (0.6 + (i * 37 % 10) / 10)}deg"></span><span class="n">0${i + 1}</span><div class="hw" data-text="${t}" data-size=".072" data-max="30" data-lh="1.05" data-color="#f3efe7"></div><span class="d">${d}</span><span class="eq"><i></i><i></i><i></i></span></button>`;
     li.querySelector('button').onclick = () => play(i);
     ol.appendChild(li);
   });
