@@ -124,6 +124,17 @@
     });
   }
 
+  // ---------- his story: notes drop in, prints slide in ----------
+  const sio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; sio.unobserve(e.target);
+    const odd = [...e.target.parentNode.children].indexOf(e.target) % 2;
+    gsap.from($('.note', e.target), { y: -80, rotate: odd ? 12 : -12, opacity: 0, duration: 1, ease: 'back.out(1.4)' });
+    gsap.from($$('.print', e.target), { y: 80, x: odd ? -60 : 60, rotate: odd ? -10 : 10, opacity: 0, duration: 1.1, stagger: 0.15, ease: 'power3.out', delay: 0.15 });
+  }), { threshold: 0.25 });
+  $$('.srow').forEach(r => sio.observe(r));
+  const rio = new IntersectionObserver(es => { if (es[0].isIntersecting) { rio.disconnect(); gsap.fromTo('.route li', { y: 30, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.14, duration: 0.7, ease: 'back.out(2)' }); } }, { threshold: 0.5 });
+  rio.observe($('.route'));
+
   // ---------- loop ----------
   function frame() { hero(); seekLoop(); if (sleeveTick()) dust(); series(); requestAnimationFrame(frame); }
 
