@@ -140,7 +140,6 @@
       .add(() => writeSheet(0), 1.1)
       .from('.count, .hint', { opacity: 0, duration: 0.8 }, 1.4);
     requestAnimationFrame(frame);
-    drawCard();
   });
 
   // ---------- player ----------
@@ -180,19 +179,24 @@
   let col = 'y';
   const photo = new Image(); photo.src = 'img/f1.jpg'; photo.onload = () => drawCard();
   const paperImg = new Image(); paperImg.src = 'img/paper.png'; paperImg.onload = () => drawCard();
+  let handOK = false;
+  Hand.ready.then(() => { handOK = true; drawCard(); });
   function drawCard() {
-    if (!window.Hand || !photo.complete) return;
+    if (!handOK || !photo.complete || !photo.naturalWidth) return;
+    cx.save();
+    try { paintCard(); } finally { cx.restore(); }
+  }
+  function paintCard() {
     const W = 1080, H = 1920;
+    cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalAlpha = 1; cx.shadowColor = 'transparent';
     cx.clearRect(0, 0, W, H);
     const s = Math.max(W / photo.width, H / photo.height);
     cx.drawImage(photo, (W - photo.width * s) / 2, (H - photo.height * s) / 2, photo.width * s, photo.height * s);
     let g = cx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(0.25, 'rgba(0,0,0,.1)'); g.addColorStop(0.6, 'rgba(0,0,0,.25)'); g.addColorStop(1, 'rgba(0,0,0,.75)');
     cx.fillStyle = g; cx.fillRect(0, 0, W, H);
-    try {
-      Hand.paint(cx, 'Some Moments In Life End, Smile!', { x: 60, y: 110, w: W - 120, size: 50, color: '#fff', align: 'center', seed: 3 });
-      Hand.paint(cx, 'Deshawn Visionz', { x: 60, y: 210, w: W - 120, size: 34, color: '#fff', align: 'center', seed: 9, alpha: 0.85 });
-    } catch (e) { return; }
+    Hand.paint(cx, 'Some Moments In Life End, Smile!', { x: 60, y: 110, w: W - 120, size: 50, color: '#fff', align: 'center', seed: 3 });
+    Hand.paint(cx, 'Deshawn Visionz', { x: 60, y: 210, w: W - 120, size: 34, color: '#fff', align: 'center', seed: 9, alpha: 0.85 });
     // the sign
     cx.save(); cx.translate(W / 2, 1180); cx.rotate(-0.04);
     const sw = 880, sh = 700;
