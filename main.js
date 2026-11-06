@@ -183,6 +183,7 @@
   const card = $('#card'), cx = card.getContext('2d'), msg = $('#msg');
   let col = 'y';
   const photo = new Image(); photo.src = 'img/f1.jpg'; photo.onload = () => drawCard();
+  const hands = new Image(); hands.src = 'img/hands.png'; hands.onload = () => drawCard();
   let handOK = false;
   Hand.ready.then(() => { handOK = true; drawCard(); });
   function drawCard() {
@@ -196,26 +197,39 @@
     cx.clearRect(0, 0, W, H);
     const s = Math.max(W / photo.width, H / photo.height);
     cx.drawImage(photo, (W - photo.width * s) / 2, (H - photo.height * s) / 2, photo.width * s, photo.height * s);
-    let g = cx.createLinearGradient(0, 0, 0, H);
+    // the custom sign sits exactly where his real sign is, then his hands go back on top
+    const k = W / photo.width, Q = [[182, 526], [629, 566], [594, 958], [150, 920]].map(([x, y]) => [x * k, y * k]);
+    const sw = 1000, sh = 820, sg = document.createElement('canvas'); sg.width = sw; sg.height = sh;
+    const sx = sg.getContext('2d'), pi = PAPER[col];
+    if (pi && pi.complete && pi.naturalWidth) sx.drawImage(pi, -14, -12, sw + 28, sh + 24); else { sx.fillStyle = C[col]; sx.fillRect(0, 0, sw, sh); }
+    const text = msg.value.trim() || 'Smile.';
+    let size = 140, L;
+    while (size > 40) { L = Hand.layout(text, size, sw - 190); if (L.lines.length * L.lineH <= sh - 200) break; size -= 6; }
+    const th = L.lines.length * L.lineH;
+    Hand.paint(sx, text, { x: 80, y: (sh - th) / 2 - size * 0.35, w: sw - 190, size, color: '#151515', align: 'center', seed: text.length * 7 });
+    const tri = (s0, s1, s2, d0, d1, d2) => {
+      // clip a slightly enlarged triangle so the two halves overlap and no seam shows
+      const cxm = (d0[0] + d1[0] + d2[0]) / 3, cym = (d0[1] + d1[1] + d2[1]) / 3, gr = p => [cxm + (p[0] - cxm) * 1.012, cym + (p[1] - cym) * 1.012];
+      cx.save(); cx.beginPath(); cx.moveTo(...gr(d0)); cx.lineTo(...gr(d1)); cx.lineTo(...gr(d2)); cx.closePath(); cx.clip();
+      const den = (s1[0] - s0[0]) * (s2[1] - s0[1]) - (s2[0] - s0[0]) * (s1[1] - s0[1]);
+      const m = (i) => [((d1[i] - d0[i]) * (s2[1] - s0[1]) - (d2[i] - d0[i]) * (s1[1] - s0[1])) / den, ((d2[i] - d0[i]) * (s1[0] - s0[0]) - (d1[i] - d0[i]) * (s2[0] - s0[0])) / den];
+      const [a_, c_] = m(0), [b_, d_] = m(1);
+      cx.setTransform(a_, b_, c_, d_, d0[0] - a_ * s0[0] - c_ * s0[1], d0[1] - b_ * s0[0] - d_ * s0[1]);
+      cx.drawImage(sg, 0, 0); cx.restore();
+    };
+    // grow each triangle a hair so the seam doesn't show
+    const P = [[0, 0], [sw, 0], [sw, sh], [0, sh]];
+    cx.save(); cx.shadowColor = 'rgba(0,0,0,.35)'; cx.shadowBlur = 30; cx.shadowOffsetY = 12;
+    cx.beginPath(); Q.forEach((p, i) => (i ? cx.lineTo(...p) : cx.moveTo(...p))); cx.closePath(); cx.fillStyle = 'rgba(0,0,0,.01)'; cx.fill(); cx.restore();
+    tri(P[0], P[1], P[3], Q[0], Q[1], Q[3]);
+    tri(P[1], P[2], P[3], Q[1], Q[2], Q[3]);
+    if (hands.complete && hands.naturalWidth) cx.drawImage(hands, 0, 0, W, hands.height * k);
+    cx.setTransform(1, 0, 0, 1, 0, 0);
+    const g = cx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(0.25, 'rgba(0,0,0,.1)'); g.addColorStop(0.6, 'rgba(0,0,0,.25)'); g.addColorStop(1, 'rgba(0,0,0,.75)');
     cx.fillStyle = g; cx.fillRect(0, 0, W, H);
     Hand.paint(cx, 'Some Moments In Life End, Smile!', { x: 60, y: 110, w: W - 120, size: 50, color: '#fff', align: 'center', seed: 3 });
     Hand.paint(cx, 'Deshawn Visionz', { x: 60, y: 210, w: W - 120, size: 34, color: '#fff', align: 'center', seed: 9, alpha: 0.85 });
-    // the sign
-    cx.save(); cx.translate(W / 2, 1180); cx.rotate(-0.04);
-    const sw = 880, sh = 700;
-    cx.shadowColor = 'rgba(0,0,0,.45)'; cx.shadowBlur = 50; cx.shadowOffsetY = 24;
-    const pi = PAPER[col];
-    if (pi && pi.complete && pi.naturalWidth) cx.drawImage(pi, -sw / 2 - 20, -sh / 2 - 20, sw + 40, sh + 40);
-    else { cx.fillStyle = C[col]; cx.fillRect(-sw / 2, -sh / 2, sw, sh); }
-    cx.shadowColor = 'transparent';
-    const text = msg.value.trim() || 'Smile.';
-    let size = 130, L;
-    while (size > 40) { L = Hand.layout(text, size, sw - 140); if (L.lines.length * L.lineH <= sh - 160) break; size -= 6; }
-    const th = L.lines.length * L.lineH;
-    Hand.paint(cx, text, { x: -sw / 2 + 70, y: -th / 2 - size * 0.35, w: sw - 140, size, color: '#151515', align: 'center', seed: text.length * 7 });
-    cx.fillStyle = 'rgba(245,240,225,.7)'; cx.rotate(0.5); cx.fillRect(-sw / 2 - 40, -sh / 2 + 120, 170, 46); cx.rotate(-1); cx.fillRect(sw / 2 - 200, -sh / 2 - 230, 170, 46);
-    cx.restore();
     Hand.paint(cx, 'out now - link in @deshawnvisionz bio', { x: 60, y: 1730, w: W - 120, size: 32, color: '#fff', align: 'center', seed: 4, alpha: 0.9 });
   }
   msg.addEventListener('input', drawCard);
