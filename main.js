@@ -50,8 +50,13 @@
     $$('.hw', sheets[k]).forEach((h, i) => Hand.write(h, i ? 0.9 : 1.1, i ? 0.7 : 0.1));
     if (k === 3) gsap.from($('.cta', sheets[3]), { y: 20, opacity: 0, duration: 0.7, delay: 1.4 });
   };
+  // section positions measured once (and on resize), not every frame
+  const G = new Map();
+  const measure = () => { [mo, sl, se].forEach(el => G.set(el, { t: el.offsetTop, h: el.offsetHeight })); pols.forEach(p => (p._x = p.offsetLeft, p._w = p.offsetWidth)); G.travel = row.scrollWidth - innerWidth; };
+  const rect = el => { const g = G.get(el), t = g.t - scrollY; return { top: t, bottom: t + g.h, height: g.h }; };
+  addEventListener('resize', () => requestAnimationFrame(measure)); addEventListener('load', measure);
   function hero() {
-    const r = mo.getBoundingClientRect(), span = r.height - innerHeight;
+    const r = rect(mo), span = r.height - innerHeight;
     if (r.bottom < 0 || r.top > innerHeight) return;
     const p = clamp(-r.top / span);
     if (introDone) DROP.forEach(([a, b], k) => {
@@ -78,7 +83,7 @@
   const sl = $('#side-b'), sleeve = $('.sleeve'), inner = $('.inner'), stitle = $('.stitle');
   let tracksOut = false, flipV = 0, lastF = 0;
   function sleeveTick() {
-    const r = sl.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return false;
+    const r = rect(sl); if (r.bottom < 0 || r.top > innerHeight) return false;
     const q = clamp(-r.top / (r.height - innerHeight));
     const f = clamp((q - 0.06) / 0.36), fe = f < 0.5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
     flipV = Math.abs(fe - lastF); lastF = fe;
@@ -114,12 +119,12 @@
   // ---------- 3. series ----------
   const se = $('#series'), top = $('.top');
   function series() {
-    const r = se.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) { top.classList.remove('dark'); return; }
-    const q = clamp(-r.top / (r.height - innerHeight)), travel = row.scrollWidth - innerWidth;
+    const r = rect(se); if (r.bottom < 0 || r.top > innerHeight) { top.classList.remove('dark'); return; }
+    const q = clamp(-r.top / (r.height - innerHeight)), travel = G.travel;
     row.style.transform = `translateX(${-q * travel}px)`;
     top.classList.toggle('dark', r.top < 40 && r.bottom > 40);
     pols.forEach((p, i) => {
-      const k = (p.getBoundingClientRect().left + p.offsetWidth / 2) / innerWidth - 0.5;
+      const k = (p._x - q * travel + p._w / 2) / innerWidth - 0.5;
       p.style.transform = `translateY(${Math.sin(i * 1.7) * 4 + k * 3}vh) rotate(${(i % 2 ? 2.5 : -3) + k * -6}deg)`;
     });
   }
@@ -136,7 +141,15 @@
   rio.observe($('.route'));
 
   // ---------- loop ----------
-  function frame() { hero(); seekLoop(); if (sleeveTick()) dust(); series(); requestAnimationFrame(frame); }
+  let lastY = -1;
+  function frame() {
+    const moved = scrollY !== lastY; lastY = scrollY;
+    if (moved || !introDone) hero();
+    seekLoop();
+    if (moved) { sleeveTick(); series(); } else flipV = 0;
+    const r = rect(sl); if (r.bottom > 0 && r.top < innerHeight) dust();
+    requestAnimationFrame(frame);
+  }
 
   // ---------- write-on when seen ----------
   const io = new IntersectionObserver(es => es.forEach(e => {
@@ -151,7 +164,7 @@
       .from([...sheets].reverse(), { y: '110vh', rotate: (i) => (i % 2 ? 14 : -12), duration: 1.3, stagger: 0.09, clearProps: 'transform' }, 0.25)
       .add(() => writeSheet(0), 1.1)
       .from('.count, .hint', { opacity: 0, duration: 0.8 }, 1.4);
-    requestAnimationFrame(frame);
+    measure(); requestAnimationFrame(frame);
   });
 
   // ---------- player ----------
