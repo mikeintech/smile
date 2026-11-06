@@ -1,25 +1,19 @@
 // Draws text in Deshawn's handwriting from the glyph sheet (font/hand.png + hand.json).
 // Any .hw element with data-text gets a canvas. data-size = cap height as a share of the element width.
 window.Hand = (() => {
-  let M, img;
-  const tints = {};
+  let M, img, ink;
+  const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
   const ready = Promise.all([
     fetch('font/hand.json').then(r => r.json()).then(j => (M = j)),
-    new Promise(r => { img = new Image(); img.src = 'font/hand.png'; img.decode().then(r, () => (img.onload = r)); })
+    load('font/hand.png').then(i => (img = i)),
+    load('font/hand-ink.png').then(i => (ink = i))
   ]);
   const MAP = { '’': "'", '‘': "'", '“': '"', '”': '"', '—': '-', '–': '-', '…': '...' };
-
-  function tint(col) {
-    if (tints[col]) return tints[col];
-    const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
-    const x = c.getContext('2d'); x.drawImage(img, 0, 0);
-    x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, c.width, c.height);
-    c.addEventListener('contextlost', () => delete tints[col]);
-    tints[col] = c;
-    // canvases can be dropped by the browser; a bitmap copy stays put
-    if (window.createImageBitmap) createImageBitmap(c).then(b => { tints[col] = b; });
-    return c;
-  }
+  // two pre-colored sheets: white chalk and dark ink
+  const tint = col => {
+    const h = col.replace('#', ''), n = parseInt(h.length === 3 ? h.replace(/./g, '$&$&') : h, 16);
+    return ((n >> 16) + ((n >> 8) & 255) + (n & 255)) / 3 < 128 ? ink : img;
+  };
   const rnd = seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
   function layout(text, size, maxW, lh = 1.45) {
