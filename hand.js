@@ -7,9 +7,9 @@ window.Hand = (() => {
   let M, img, ink;
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
   const ready = Promise.all([
-    fetch(`font/${FONT}.json`).then(r => r.json()).then(j => (M = j)),
-    load(`font/${FONT}.png?v=2`).then(i => (img = i)),
-    load(`font/${FONT}-ink.png?v=2`).then(i => (ink = i))
+    fetch(`font/${FONT}.json?v=4`).then(r => r.json()).then(j => (M = j)),
+    load(`font/${FONT}.png?v=4`).then(i => (img = i)),
+    load(`font/${FONT}-ink.png?v=4`).then(i => (ink = i))
   ]);
   const MAP = { '’': "'", '‘': "'", '“': '"', '”': '"', '—': '-', '–': '-', '…': '...' };
   // two pre-colored sheets: white chalk and dark ink
@@ -48,7 +48,7 @@ window.Hand = (() => {
         if (wi) x += L.sp * L.s;
         for (let ch of w) {
           ch = MAP[ch] || ch; const g = M.g[ch];
-          const jr = (r() - 0.5) * 0.06, jy = (r() - 0.5) * o.size * 0.06;
+          const jr = (r() - 0.5) * 0.025, jy = (r() - 0.5) * o.size * 0.015;  // tiny wobble only, letters stay on the line
           if (!g) { x += L.sp * L.s; i++; continue; }
           const f = Math.max(0, Math.min(1, shown - i));
           if (f > 0) {
