@@ -134,13 +134,13 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
 .btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
 .ctl small{display:block;margin-top:16px;opacity:.65;font-size:12px}
 /* iPhone: thin titanium frame, black bezel, Dynamic Island, side buttons */
-.phone{position:relative;width:min(320px,78vw);aspect-ratio:9/19.3;background:#000;border-radius:15%/7%;padding:3.2%;
-  box-shadow:0 0 0 3px #262838,0 0 0 4px #3a3d52,0 40px 80px rgba(0,0,0,.55);transform:rotate(2deg)}
+.phone{position:relative;width:min(320px,78vw);aspect-ratio:9/19.3;background:#000;border-radius:14%/6.6%;padding:1.6%;
+  box-shadow:0 0 0 2px #262838,0 0 0 3px #3a3d52,0 40px 80px rgba(0,0,0,.55);transform:rotate(2deg)}
 .phone .sb{position:absolute;width:4px;background:linear-gradient(90deg,#1d1f2c,#3a3d52);border-radius:2px}
 .phone .sb.l1{left:-7px;top:16%;height:5%}.phone .sb.l2{left:-7px;top:25%;height:9%}.phone .sb.l3{left:-7px;top:36%;height:9%}
 .phone .sb.r{right:-7px;top:27%;height:14%}
-.phone canvas{width:100%;height:100%;object-fit:cover;object-position:center;border-radius:12%/5.6%;background:#000}
-.phone::before{content:"";position:absolute;top:3.4%;left:50%;width:31%;height:3.6%;transform:translateX(-50%);background:#000;border-radius:999px;z-index:2;box-shadow:inset -10px 0 0 -6px #111522}
+.phone canvas{width:100%;height:100%;object-fit:cover;object-position:center;border-radius:12.5%/5.9%;background:#000}
+.phone::before{content:"";position:absolute;top:2.6%;left:50%;width:31%;height:3.6%;transform:translateX(-50%);background:#000;border-radius:999px;z-index:2;box-shadow:inset -10px 0 0 -6px #111522}
 
 /* 5. credits */
 .credits{position:relative;background:var(--asph) url(img/asphalt.jpg);background-size:520px;padding:18vh clamp(16px,6vw,80px) 10vh;text-align:center}
