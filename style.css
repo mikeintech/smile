@@ -148,7 +148,10 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
 /* 5. credits */
 .credits{position:relative;background:var(--asph) url(img/asphalt.jpg);background-size:520px;padding:18vh clamp(16px,6vw,80px) 10vh;text-align:center}
 .credits>.hw{max-width:900px;margin:0 auto}
-.credits ul{list-style:none;margin:8vh auto 6vh;max-width:620px}
+.credits ul{list-style:none;margin:0;max-width:620px;width:100%}
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,6vw,90px);align-items:center;max-width:1080px;margin:8vh auto 6vh;text-align:center}
+.cgrid .ty{padding:10px 10px 34px;--pr:-3deg;max-width:460px;justify-self:center;width:100%}
+.cgrid .ty img{aspect-ratio:1}
 .credits li{display:flex;flex-direction:column;gap:6px;padding:16px 0;border-bottom:1px dashed rgba(243,239,231,.18)}
 .credits li span{font-size:11px;letter-spacing:.24em;text-transform:uppercase;opacity:.6}
 .credits li b{font-size:22px;font-weight:700}
@@ -191,6 +194,8 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
   .sleeve{width:66vw;top:44%}
   .tracks{left:12px;right:12px;width:auto;top:auto;bottom:104px;transform:none}
   .tracks button{padding:6px 10px}
+  .cgrid{grid-template-columns:1fr}
+  .cgrid .ty{max-width:340px}
   .story{padding:14vh 16px 10vh}
   .srow{grid-template-columns:1fr;gap:28px;margin-bottom:12vh}
   .srow:nth-child(odd) .note{order:0}
