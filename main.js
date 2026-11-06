@@ -1,16 +1,17 @@
 (() => {
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const C = { g: '#5fdc14', o: '#ff9312', b: '#0d9bf2', y: '#ffd80c' };
+  const C = { g: '#4ce902', o: '#f27f01', b: '#0190f0', y: '#edc902' };
   const TRACKS = [["I'm Not Depressed", '2:36'], ['Tell Me', '2:58'], ['Name', '2:24'], ['Need It', '2:48'], ['Feel', '2:24'], ['Anywhere', '3:15'], ["Don't Cry", '3:28']];
-  const TCOL = ['g', 'o', 'b', 'y', 'g', 'o', 'b'].map(k => C[k]);
+  const TK = ['g', 'o', 'b', 'y', 'g', 'o', 'b'], TCOL = TK.map(k => C[k]);
+  const PAPER = {}; ['g', 'o', 'b', 'y'].forEach(k => { const i = new Image(); i.src = `img/paper-${k}.webp`; i.onload = () => drawCard(); PAPER[k] = i; });
   const mob = () => innerWidth <= 820;
 
   // ---------- build tracklist + polaroids (before handwriting mounts) ----------
   const ol = $('.tracks');
   TRACKS.forEach(([t, d], i) => {
     const li = document.createElement('li');
-    li.innerHTML = `<button aria-label="Play ${t}"><span class="note" style="--c:${TCOL[i]};--r:${(i % 2 ? 1 : -1) * (0.6 + (i * 37 % 10) / 10)}deg"></span><span class="n">0${i + 1}</span><div class="hw" data-text="${t}" data-size=".072" data-max="30" data-color="#f3efe7"></div><span class="d">${d}</span><span class="eq"><i></i><i></i><i></i></span></button>`;
+    li.innerHTML = `<button aria-label="Play ${t}"><span class="note" style="--p:url(img/paper-${TK[i]}.webp);--r:${(i % 2 ? 1 : -1) * (0.6 + (i * 37 % 10) / 10)}deg"></span><span class="n">0${i + 1}</span><div class="hw" data-text="${t}" data-size=".072" data-max="30" data-color="#f3efe7"></div><span class="d">${d}</span><span class="eq"><i></i><i></i><i></i></span></button>`;
     li.querySelector('button').onclick = () => play(i);
     ol.appendChild(li);
   });
@@ -34,7 +35,7 @@
     for (let i = n; i >= 0; i--) pts.push(`${j()}% ${(i / n * 100).toFixed(1)}%`);
     el.style.clipPath = `polygon(${pts.join(',')})`;
   };
-  $$('.sheet').forEach(torn);
+  
 
   // ---------- 1. the signs ----------
   const mo = $('#moments'), sheets = ['.s1', '.s2', '.s3', '.s4'].map(s => $(s, mo));
@@ -146,7 +147,11 @@
   const aud = $('#aud'), pl = $('.player'), bar = $('.bar i'), pt = $('.ptitle'), pn = $('.pn');
   let cur = -1;
   function setUI() {
-    $$('li', ol).forEach((li, i) => { li.classList.toggle('on', i === cur); li.classList.toggle('playing', i === cur && !aud.paused); });
+    $$('li', ol).forEach((li, i) => {
+      li.classList.toggle('on', i === cur); li.classList.toggle('playing', i === cur && !aud.paused);
+      const h = $('.hw', li), want = i === cur ? '#151515' : '#f3efe7';
+      if (h.dataset.color !== want) { h.dataset.color = want; h._hw && h._hw.draw(); }
+    });
     pl.classList.toggle('playing', !aud.paused);
   }
   function play(i) {
@@ -154,7 +159,7 @@
     const go = () => {
       cur = i; aud.src = `audio/${i + 1}.m4a`; aud.volume = 0; aud.play().catch(() => {});
       gsap.to(aud, { volume: 1, duration: 0.8 });
-      pl.style.setProperty('--pc', TCOL[i]); pn.textContent = '0' + (i + 1);
+      pl.style.setProperty('--pc', TCOL[i]); pl.style.setProperty('--pp', `url(img/paper-${TK[i]}.webp)`); pn.textContent = '0' + (i + 1);
       pt._hw ? (pt._hw.set(TRACKS[i][0]), Hand.write(pt, 0.5)) : (pt.dataset.text = TRACKS[i][0]);
       pl.classList.add('show'); setUI();
     };
@@ -178,7 +183,6 @@
   const card = $('#card'), cx = card.getContext('2d'), msg = $('#msg');
   let col = 'y';
   const photo = new Image(); photo.src = 'img/f1.jpg'; photo.onload = () => drawCard();
-  const paperImg = new Image(); paperImg.src = 'img/paper.png'; paperImg.onload = () => drawCard();
   let handOK = false;
   Hand.ready.then(() => { handOK = true; drawCard(); });
   function drawCard() {
@@ -201,10 +205,10 @@
     cx.save(); cx.translate(W / 2, 1180); cx.rotate(-0.04);
     const sw = 880, sh = 700;
     cx.shadowColor = 'rgba(0,0,0,.45)'; cx.shadowBlur = 50; cx.shadowOffsetY = 24;
-    cx.fillStyle = C[col]; cx.fillRect(-sw / 2, -sh / 2, sw, sh); cx.shadowColor = 'transparent';
-    if (paperImg.complete) { cx.fillStyle = cx.createPattern(paperImg, 'repeat'); cx.fillRect(-sw / 2, -sh / 2, sw, sh); }
-    g = cx.createLinearGradient(-sw / 2, -sh / 2, sw / 2, sh / 2); g.addColorStop(0, 'rgba(255,255,255,.22)'); g.addColorStop(0.45, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,.08)');
-    cx.fillStyle = g; cx.fillRect(-sw / 2, -sh / 2, sw, sh);
+    const pi = PAPER[col];
+    if (pi && pi.complete && pi.naturalWidth) cx.drawImage(pi, -sw / 2 - 20, -sh / 2 - 20, sw + 40, sh + 40);
+    else { cx.fillStyle = C[col]; cx.fillRect(-sw / 2, -sh / 2, sw, sh); }
+    cx.shadowColor = 'transparent';
     const text = msg.value.trim() || 'Smile.';
     let size = 130, L;
     while (size > 40) { L = Hand.layout(text, size, sw - 140); if (L.lines.length * L.lineH <= sh - 160) break; size -= 6; }
