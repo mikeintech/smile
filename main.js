@@ -227,10 +227,10 @@
     const sx = sg.getContext('2d'), pi = PAPER[col];
     if (pi && pi.complete && pi.naturalWidth) sx.drawImage(pi, -14, -12, sw + 28, sh + 24); else { sx.fillStyle = C[col]; sx.fillRect(0, 0, sw, sh); }
     const text = msg.value.trim() || 'Smile.';
-    let size = 140, L;
-    while (size > 40) { L = Hand.layout(text, size, sw - 190); if (L.lines.length * L.lineH <= sh - 200) break; size -= 6; }
-    const th = L.lines.length * L.lineH;
-    Hand.paint(sx, text, { x: 80, y: (sh - th) / 2 - size * 0.35, w: sw - 190, size, color: '#151515', align: 'center', seed: text.length * 7 });
+    let size = 150;
+    while (size > 40 && Hand.measure(text, size, sw - 190) > sh - 200) size -= 6;
+    const th = Hand.measure(text, size, sw - 190);
+    Hand.paint(sx, text, { x: 80, y: (sh - th) / 2 - size * 0.3, w: sw - 190, size, color: '#151515', align: 'center', seed: text.length * 7 });
     const tri = (s0, s1, s2, d0, d1, d2) => {
       // clip a slightly enlarged triangle so the two halves overlap and no seam shows
       const cxm = (d0[0] + d1[0] + d2[0]) / 3, cym = (d0[1] + d1[1] + d2[1]) / 3, gr = p => [cxm + (p[0] - cxm) * 1.012, cym + (p[1] - cym) * 1.012];
