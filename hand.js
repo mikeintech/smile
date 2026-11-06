@@ -1,12 +1,15 @@
 // Draws text in Deshawn's handwriting from the glyph sheet (font/hand.png + hand.json).
 // Any .hw element with data-text gets a canvas. data-size = cap height as a share of the element width.
 window.Hand = (() => {
+  // Which handwriting to use. 'hand2' = his marker sheet (current), 'hand' = the first chalk sheet.
+  // To go back: set FONT to 'hand', or add ?font=1 to the URL to preview it.
+  const FONT = new URLSearchParams(location.search).get('font') === '1' ? 'hand' : 'hand2';
   let M, img, ink;
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
   const ready = Promise.all([
-    fetch('font/hand.json').then(r => r.json()).then(j => (M = j)),
-    load('font/hand.png').then(i => (img = i)),
-    load('font/hand-ink.png').then(i => (ink = i))
+    fetch(`font/${FONT}.json`).then(r => r.json()).then(j => (M = j)),
+    load(`font/${FONT}.png?v=2`).then(i => (img = i)),
+    load(`font/${FONT}-ink.png?v=2`).then(i => (ink = i))
   ]);
   const MAP = { '’': "'", '‘': "'", '“': '"', '”': '"', '—': '-', '–': '-', '…': '...' };
   // two pre-colored sheets: white chalk and dark ink
