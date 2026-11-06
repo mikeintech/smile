@@ -252,9 +252,9 @@
     const g = cx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(0.25, 'rgba(0,0,0,.1)'); g.addColorStop(0.6, 'rgba(0,0,0,.25)'); g.addColorStop(1, 'rgba(0,0,0,.75)');
     cx.fillStyle = g; cx.fillRect(0, 0, W, H);
-    Hand.paint(cx, 'Some Moments In Life End, Smile!', { x: 60, y: 110, w: W - 120, size: 50, color: '#fff', align: 'center', seed: 3 });
-    Hand.paint(cx, 'Deshawn Visionz', { x: 60, y: 210, w: W - 120, size: 34, color: '#fff', align: 'center', seed: 9, alpha: 0.85 });
-    Hand.paint(cx, 'out now - link in @deshawnvisionz bio', { x: 60, y: 1730, w: W - 120, size: 32, color: '#fff', align: 'center', seed: 4, alpha: 0.9 });
+    Hand.paint(cx, 'Some Moments In Life End,\nSmile!', { x: 150, y: 175, w: W - 300, size: 50, color: '#fff', align: 'center', seed: 3 });
+    Hand.paint(cx, 'Deshawn Visionz', { x: 150, y: 340, w: W - 300, size: 34, color: '#fff', align: 'center', seed: 9, alpha: 0.85 });
+    Hand.paint(cx, 'out now - link in bio', { x: 150, y: 1690, w: W - 300, size: 34, color: '#fff', align: 'center', seed: 4, alpha: 0.9 });
   }
   msg.addEventListener('input', drawCard);
   $$('.sw button').forEach(b => b.onclick = () => { $$('.sw button').forEach(x => x.setAttribute('aria-checked', x === b)); col = b.dataset.c; drawCard(); });
