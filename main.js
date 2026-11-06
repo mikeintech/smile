@@ -15,13 +15,13 @@
     li.querySelector('button').onclick = () => play(i);
     ol.appendChild(li);
   });
-  const POLS = [['f1.jpg', 'life is a series of moments'], ['f2.jpg', 'some end'], ['vid', 'bj reece orchards'], ['f4.jpg', 'so others can begin'], ['f6.jpg', 'S.M.I.L.E'], ['f7.jpg', 'no features'], ['f9.jpg', 'jet row on every beat'], ['f10.jpg', 'smile - tomorrow']];
+  const POLS = [['f1.jpg', 'life is a series of moments'], ['f2.jpg', 'some end'], ['vid', 'bj reece orchards'], ['f4.jpg', 'so others can begin'], ['f6.jpg', 'S.M.I.L.E'], ['f7.jpg', 'no features'], ['f9.jpg', 'jet row on every beat'], ['f10.jpg', 'S.M.I.L.E']];
   const row = $('.row');
   POLS.forEach(([src, cap], i) => {
     const f = document.createElement('figure'); f.className = 'pol';
     f.style.setProperty('--tr', (i % 2 ? 5 : -4) + 'deg');
     f.innerHTML = (src === 'vid' ? '<video src="vid/s84801.mp4" muted loop playsinline autoplay preload="metadata"></video>' : `<img src="img/${src}" alt="" loading="lazy">`) +
-      `<span class="tape"></span><figcaption class="hw" data-text="${cap}" data-size=".085" data-color="#1d1d1d" data-seed="${i * 13 + 5}"></figcaption>`;
+      `<span class="tape"></span><figcaption class="hw" data-text="${cap}" data-size=".085" data-align="center" data-color="#1d1d1d" data-seed="${i * 13 + 5}"></figcaption>`;
     row.appendChild(f);
   });
   const pols = $$('.pol');
