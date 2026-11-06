@@ -4,14 +4,14 @@
   const C = { g: '#4ce902', o: '#f27f01', b: '#0190f0', y: '#edc902' };
   const TRACKS = [["I'm Not Depressed", '2:36'], ['Tell Me', '2:58'], ['Name', '2:24'], ['Need It', '2:48'], ['Feel', '2:24'], ['Anywhere', '3:15'], ["Don't Cry", '3:28']];
   const TK = ['g', 'o', 'b', 'y', 'g', 'o', 'b'], TCOL = TK.map(k => C[k]);
-  const PAPER = {}; ['g', 'o', 'b', 'y'].forEach(k => { const i = new Image(); i.src = `img/paper-${k}.webp`; i.onload = () => drawCard(); PAPER[k] = i; });
+  const PAPER = {}; ['g', 'o', 'b', 'y'].forEach(k => { const i = new Image(); i.src = `img/paper-${k}.webp?v=2`; i.onload = () => drawCard(); PAPER[k] = i; });
   const mob = () => innerWidth <= 820;
 
   // ---------- build tracklist + polaroids (before handwriting mounts) ----------
   const ol = $('.tracks');
   TRACKS.forEach(([t, d], i) => {
     const li = document.createElement('li');
-    li.innerHTML = `<button aria-label="Play ${t}"><span class="note" style="--p:url(img/paper-${TK[i]}.webp);--r:${(i % 2 ? 1 : -1) * (0.6 + (i * 37 % 10) / 10)}deg"></span><span class="n">0${i + 1}</span><div class="hw" data-text="${t}" data-size=".072" data-max="30" data-color="#f3efe7"></div><span class="d">${d}</span><span class="eq"><i></i><i></i><i></i></span></button>`;
+    li.innerHTML = `<button aria-label="Play ${t}"><span class="note" style="--p:url(img/paper-${TK[i]}.webp?v=2);--r:${(i % 2 ? 1 : -1) * (0.6 + (i * 37 % 10) / 10)}deg"></span><span class="n">0${i + 1}</span><div class="hw" data-text="${t}" data-size=".072" data-max="30" data-color="#f3efe7"></div><span class="d">${d}</span><span class="eq"><i></i><i></i><i></i></span></button>`;
     li.querySelector('button').onclick = () => play(i);
     ol.appendChild(li);
   });
@@ -159,7 +159,7 @@
     const go = () => {
       cur = i; aud.src = `audio/${i + 1}.m4a`; aud.volume = 0; aud.play().catch(() => {});
       gsap.to(aud, { volume: 1, duration: 0.8 });
-      pl.style.setProperty('--pc', TCOL[i]); pl.style.setProperty('--pp', `url(img/paper-${TK[i]}.webp)`); pn.textContent = '0' + (i + 1);
+      pl.style.setProperty('--pc', TCOL[i]); pl.style.setProperty('--pp', `url(img/paper-${TK[i]}.webp?v=2)`); pn.textContent = '0' + (i + 1);
       pt._hw ? (pt._hw.set(TRACKS[i][0]), Hand.write(pt, 0.5)) : (pt.dataset.text = TRACKS[i][0]);
       pl.classList.add('show'); setUI();
     };

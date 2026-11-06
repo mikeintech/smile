@@ -1,6 +1,6 @@
 :root{
   --g:#4ce902; --o:#f27f01; --b:#0190f0; --y:#edc902;
-  --pg:url(img/paper-g.webp); --po:url(img/paper-o.webp); --pb:url(img/paper-b.webp); --py:url(img/paper-y.webp);
+  --pg:url(img/paper-g.webp?v=2); --po:url(img/paper-o.webp?v=2); --pb:url(img/paper-b.webp?v=2); --py:url(img/paper-y.webp?v=2);
   --ink:#151515; --cream:#f1ebdf; --asph:#1c1715; --sky:#0a56c9;
   --mono:'Courier Prime',ui-monospace,Menlo,monospace;
 }
