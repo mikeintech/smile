@@ -211,11 +211,13 @@
   const posterOnly = $('#poster-only'), tagHint = $('#tag-hint');
   let col = 'y';
   const photo = new Image(); photo.src = 'img/f1.jpg'; photo.onload = () => drawCard();
+  const field = new Image(); field.src = 'img/poster-field.png'; field.onload = () => drawCard();
   const hands = new Image(); hands.src = 'img/hands.png'; hands.onload = () => drawCard();
   let handOK = false;
   Hand.ready.then(() => { handOK = true; drawCard(); });
   function drawCard() {
-    if (!handOK || !photo.complete || !photo.naturalWidth) return;
+    const background = posterOnly.checked ? field : photo;
+    if (!handOK || !background.complete || !background.naturalWidth) return;
     cx.save();
     try { paintCard(); } finally { cx.restore(); }
   }
@@ -223,10 +225,16 @@
     const W = 1080, H = 1920;
     cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalAlpha = 1; cx.shadowColor = 'transparent';
     cx.clearRect(0, 0, W, H);
-    const s = Math.max(W / photo.width, H / photo.height);
-    cx.drawImage(photo, (W - photo.width * s) / 2, (H - photo.height * s) / 2, photo.width * s, photo.height * s);
-    // the custom sign sits exactly where his real sign is, then his hands go back on top
-    const k = W / photo.width, Q = [[182, 526], [629, 566], [594, 958], [150, 920]].map(([x, y]) => [x * k, y * k]);
+    const background = posterOnly.checked ? field : photo;
+    const scale = Math.max(W / background.width, H / background.height);
+    const offsetX = (W - background.width * scale) / 2, offsetY = (H - background.height * scale) / 2;
+    cx.drawImage(background, offsetX, offsetY, background.width * scale, background.height * scale);
+    // Match each background's board corners, with a small bleed over the green edges.
+    const corners = posterOnly.checked
+      ? [[210, 737], [815, 779], [775, 1245], [190, 1202]]
+      : [[182, 526], [629, 566], [594, 958], [150, 920]];
+    const k = W / photo.width;
+    const Q = corners.map(([x, y]) => [x * scale + offsetX, y * scale + offsetY]);
     const sw = 1000, sh = 820, sg = document.createElement('canvas'); sg.width = sw; sg.height = sh;
     const sx = sg.getContext('2d'), pi = PAPER[col];
     if (pi && pi.complete && pi.naturalWidth) sx.drawImage(pi, -14, -12, sw + 28, sh + 24); else { sx.fillStyle = C[col]; sx.fillRect(0, 0, sw, sh); }
@@ -251,7 +259,7 @@
     cx.beginPath(); Q.forEach((p, i) => (i ? cx.lineTo(...p) : cx.moveTo(...p))); cx.closePath(); cx.fillStyle = 'rgba(0,0,0,.01)'; cx.fill(); cx.restore();
     tri(P[0], P[1], P[3], Q[0], Q[1], Q[3]);
     tri(P[1], P[2], P[3], Q[1], Q[2], Q[3]);
-    if (hands.complete && hands.naturalWidth) cx.drawImage(hands, 0, 0, W, hands.height * k);
+    if (!posterOnly.checked && hands.complete && hands.naturalWidth) cx.drawImage(hands, 0, 0, W, hands.height * k);
     cx.setTransform(1, 0, 0, 1, 0, 0);
     if (posterOnly.checked) return;
     const g = cx.createLinearGradient(0, 0, 0, H);
