@@ -208,6 +208,7 @@
 
   // ---------- your sign ----------
   const card = $('#card'), cx = card.getContext('2d'), msg = $('#msg');
+  const posterOnly = $('#poster-only'), tagHint = $('#tag-hint');
   let col = 'y';
   const photo = new Image(); photo.src = 'img/f1.jpg'; photo.onload = () => drawCard();
   const hands = new Image(); hands.src = 'img/hands.png'; hands.onload = () => drawCard();
@@ -252,6 +253,7 @@
     tri(P[1], P[2], P[3], Q[1], Q[2], Q[3]);
     if (hands.complete && hands.naturalWidth) cx.drawImage(hands, 0, 0, W, hands.height * k);
     cx.setTransform(1, 0, 0, 1, 0, 0);
+    if (posterOnly.checked) return;
     const g = cx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(0.25, 'rgba(0,0,0,.1)'); g.addColorStop(0.6, 'rgba(0,0,0,.25)'); g.addColorStop(1, 'rgba(0,0,0,.75)');
     cx.fillStyle = g; cx.fillRect(0, 0, W, H);
@@ -259,6 +261,10 @@
     Hand.paint(cx, 'Deshawn Visionz', { x: 150, y: 340, w: W - 300, size: 34, color: '#fff', align: 'center', seed: 9, alpha: 0.85 });
     Hand.paint(cx, 'out now - link in bio', { x: 150, y: 1690, w: W - 300, size: 34, color: '#fff', align: 'center', seed: 4, alpha: 0.9 });
   }
+  posterOnly.addEventListener('change', () => {
+    tagHint.hidden = posterOnly.checked;
+    drawCard();
+  });
   msg.addEventListener('input', drawCard);
   $$('.sw button').forEach(b => b.onclick = () => { $$('.sw button').forEach(x => x.setAttribute('aria-checked', x === b)); col = b.dataset.c; drawCard(); });
   const blob = () => new Promise(r => card.toBlob(r, 'image/png'));
@@ -277,7 +283,7 @@
   };
   $('#share').onclick = async () => {
     const f = new File([await blob()], 'my-moment.png', { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], text: 'Some Moments In Life End, Smile! @deshawnvisionz' }).catch(() => {});
+    if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], ...(posterOnly.checked ? {} : { text: 'Some Moments In Life End, Smile! @deshawnvisionz' }) }).catch(() => {});
     else $('#save').click();
   };
 })();

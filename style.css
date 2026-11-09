@@ -214,3 +214,7 @@ textarea:focus{outline:2px solid var(--y);outline-offset:2px}
   .player{bottom:max(12px,env(safe-area-inset-bottom))}
 }
 @media (prefers-reduced-motion:reduce){.grain,.hint::after,.eq i{animation:none}}
+
+.ctl .branding-option{display:flex;align-items:center;gap:10px;margin:0 0 20px;cursor:pointer}
+.ctl small[hidden]{display:none}
+.branding-option input{width:18px;height:18px;margin:0;accent-color:var(--py);flex-shrink:0}
