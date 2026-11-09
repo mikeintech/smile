@@ -247,7 +247,7 @@
     const sx = sg.getContext('2d'), pi = PAPER[col];
     if (pi && pi.complete && pi.naturalWidth) sx.drawImage(pi, -14, -12, sw + 28, sh + 24); else { sx.fillStyle = C[col]; sx.fillRect(0, 0, sw, sh); }
     const text = msg.value.trim() || 'Smile.';
-    const lineHeight = 1.55;
+    const lineHeight = 1.85;
     let size = 150;
     while (size > 40 && Hand.measure(text, size, sw - 190, lineHeight) > sh - 200) size -= 6;
     const th = Hand.measure(text, size, sw - 190, lineHeight);
