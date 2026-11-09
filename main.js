@@ -239,7 +239,7 @@
     }
     // Match each background's board corners, with a small bleed over the green edges.
     const corners = posterOnly.checked
-      ? [[210, 737], [815, 779], [775, 1245], [190, 1202]]
+      ? [[202, 729], [823, 771], [783, 1253], [182, 1210]]
       : [[182, 526], [629, 566], [594, 958], [150, 920]];
     const k = W / photo.width;
     const Q = corners.map(([x, y]) => [x * scale + offsetX, y * scale + offsetY]);
