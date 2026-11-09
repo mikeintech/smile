@@ -226,11 +226,17 @@
     cx.setTransform(1, 0, 0, 1, 0, 0); cx.globalAlpha = 1; cx.shadowColor = 'transparent';
     cx.clearRect(0, 0, W, H);
     const background = posterOnly.checked ? field : photo;
-    const scale = Math.max(W / background.width, H / background.height) * (posterOnly.checked ? 1.25 : 1);
+    const scale = Math.max(W / background.width, H / background.height) * (posterOnly.checked ? 1.05 : 1);
     // Center the field board itself rather than the full background photo.
     const offsetX = posterOnly.checked ? W / 2 - 497.5 * scale : (W - background.width * scale) / 2;
     const offsetY = posterOnly.checked ? H / 2 - 990.75 * scale : (H - background.height * scale) / 2;
     cx.drawImage(background, offsetX, offsetY, background.width * scale, background.height * scale);
+    // Extend the path below the board to keep the centered, wider framing filled.
+    if (posterOnly.checked && offsetY + background.height * scale < H) {
+      const pathY = 1250, destY = offsetY + pathY * scale;
+      cx.drawImage(background, 0, pathY, background.width, background.height - pathY,
+        offsetX, destY, background.width * scale, H - destY);
+    }
     // Match each background's board corners, with a small bleed over the green edges.
     const corners = posterOnly.checked
       ? [[210, 737], [815, 779], [775, 1245], [190, 1202]]
